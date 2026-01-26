@@ -5,9 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 interface NeedsViewProps {
     product: Product;
     isVisible: boolean;
+    onAddToCart: (product: Product) => void;
 }
 
-export default function NeedsView({ product, isVisible }: NeedsViewProps) {
+export default function NeedsView({ product, isVisible, onAddToCart }: NeedsViewProps) {
     return (
         <AnimatePresence>
             {isVisible && (
@@ -70,7 +71,10 @@ export default function NeedsView({ product, isVisible }: NeedsViewProps) {
 
                             {/* Action */}
                             <div className="flex items-center gap-6">
-                                <button className="bg-black text-white px-10 py-4 text-sm font-bold tracking-widest hover:bg-gray-800 transition-colors duration-300">
+                                <button
+                                    onClick={() => onAddToCart(product)}
+                                    className="bg-black text-white px-10 py-4 text-sm font-bold tracking-widest hover:bg-gray-800 transition-colors duration-300"
+                                >
                                     ADD TO CART - {product.price}
                                 </button>
                             </div>

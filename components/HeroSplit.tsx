@@ -6,9 +6,10 @@ interface HeroSplitProps {
     product: Product;
     onVideoEnd: () => void;
     isPaused: boolean;
+    onAddToCart: (product: Product) => void;
 }
 
-export default function HeroSplit({ product, onVideoEnd, isPaused }: HeroSplitProps) {
+export default function HeroSplit({ product, onVideoEnd, isPaused, onAddToCart }: HeroSplitProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
@@ -60,7 +61,10 @@ export default function HeroSplit({ product, onVideoEnd, isPaused }: HeroSplitPr
                                     {product.price}
                                 </motion.div>
 
-                                <button className="bg-[#ededed] text-[#0D0D0D] px-8 py-3 text-sm font-medium tracking-wide hover:bg-white transition-colors duration-300">
+                                <button
+                                    onClick={() => onAddToCart(product)}
+                                    className="bg-[#ededed] text-[#0D0D0D] px-8 py-3 text-sm font-medium tracking-wide hover:bg-white transition-colors duration-300"
+                                >
                                     ADD TO CART
                                 </button>
                             </div>
