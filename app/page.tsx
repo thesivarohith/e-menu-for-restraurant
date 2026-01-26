@@ -6,11 +6,13 @@ import HeroSplit from "@/components/HeroSplit";
 import Navbar from "@/components/Navbar";
 import ProductGrid from "@/components/ProductGrid";
 import BottomNav from "@/components/BottomNav";
+import HeaderToggle from "@/components/HeaderToggle";
+import NeedsView from "@/components/NeedsView";
 import { products } from "@/data/products";
 
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [viewMode, setViewMode] = useState<'WANTS' | 'NEEDS'>('WANTS');
 
   // Scroll Animations
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,8 +35,17 @@ export default function Home() {
       {/* Fixed Navbar */}
       <Navbar />
 
+      {/* Center Toggle Switch */}
+      <HeaderToggle viewMode={viewMode} onToggle={setViewMode} />
+
       {/* Fixed BottomNav */}
       <BottomNav />
+
+      {/* Needs View Overlay - Synchronized with current product */}
+      <NeedsView
+        product={products[currentIndex]}
+        isVisible={viewMode === 'NEEDS'}
+      />
 
       {/* Fixed Hero Section with Scroll Effects */}
       <motion.div
@@ -44,7 +55,7 @@ export default function Home() {
         <HeroSplit
           product={products[currentIndex]}
           onVideoEnd={handleVideoEnd}
-          isPaused={isPaused}
+          isPaused={viewMode === 'NEEDS'}
         />
       </motion.div>
 
