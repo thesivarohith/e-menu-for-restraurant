@@ -83,7 +83,6 @@ export default function HeroSplit({ product, onVideoEnd, isPaused }: HeroSplitPr
                             className="h-full w-full object-cover opacity-90"
                             autoPlay
                             muted
-                            loop
                             playsInline
                             crossOrigin="anonymous"
                             onEnded={onVideoEnd}

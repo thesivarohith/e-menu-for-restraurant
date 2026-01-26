@@ -1,5 +1,4 @@
 import { Product } from "@/data/products";
-import Image from "next/image";
 import { motion } from "framer-motion";
 
 interface ProductGridProps {
@@ -42,11 +41,10 @@ export default function ProductGrid({ products, onProductClick }: ProductGridPro
                                     transition={{ duration: 0.7, ease: [0.33, 1, 0.68, 1] }}
                                     className="w-full h-full"
                                 >
-                                    <Image
+                                    <img
                                         src={product.gridThumbnail}
                                         alt={product.title}
-                                        fill
-                                        className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+                                        className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
                                     />
                                 </motion.div>
                             </div>
