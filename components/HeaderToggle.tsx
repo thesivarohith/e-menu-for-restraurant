@@ -13,7 +13,7 @@ export default function HeaderToggle({ viewMode, onToggle }: HeaderToggleProps) 
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
             >
-                <div className="flex bg-white/10 backdrop-blur-sm rounded-full p-1 border border-white/20">
+                <div className="flex bg-[#111111]/95 rounded-full p-1 border border-white/10">
                     <button
                         onClick={() => onToggle('WANTS')}
                         className={`px-8 py-2.5 rounded-full text-[10px] font-medium tracking-[0.2em] transition-all duration-500 ${viewMode === 'WANTS'

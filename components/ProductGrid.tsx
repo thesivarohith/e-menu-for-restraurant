@@ -4,9 +4,10 @@ import { motion } from "framer-motion";
 interface ProductGridProps {
     products: Product[];
     onProductClick: (index: number) => void;
+    onAddToCart: (product: Product) => void;
 }
 
-export default function ProductGrid({ products, onProductClick }: ProductGridProps) {
+export default function ProductGrid({ products, onProductClick, onAddToCart }: ProductGridProps) {
     return (
         <section className="min-h-screen bg-[#0D0D0D] py-32 px-4 md:px-12 relative z-20">
             <div className="max-w-[90rem] mx-auto">
@@ -62,7 +63,13 @@ export default function ProductGrid({ products, onProductClick }: ProductGridPro
                                     <p className="text-xs text-white/40 uppercase tracking-[0.2em] font-[family-name:var(--font-inter)]">
                                         {product.description}
                                     </p>
-                                    <button className="text-black bg-white/90 hover:bg-white px-6 py-2 text-sm uppercase font-medium tracking-wide opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onAddToCart(product);
+                                        }}
+                                        className="text-black bg-white/90 hover:bg-white px-6 py-2 text-sm uppercase font-medium tracking-wide opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0"
+                                    >
                                         Add to Cart
                                     </button>
                                 </div>

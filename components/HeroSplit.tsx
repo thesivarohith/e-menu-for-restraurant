@@ -1,15 +1,16 @@
 import React, { useRef, useEffect } from "react";
 import { Product } from "@/data/products";
 import { AnimatePresence, motion } from "framer-motion";
+import { getOptimizedVideoUrl } from "@/lib/mediaUtils";
 
 interface HeroSplitProps {
     product: Product;
     onVideoEnd: () => void;
     isPaused: boolean;
-    onAddToCart: (product: Product) => void;
+    onRequestSizeSelection: (product: Product) => void;
 }
 
-export default function HeroSplit({ product, onVideoEnd, isPaused, onAddToCart }: HeroSplitProps) {
+export default function HeroSplit({ product, onVideoEnd, isPaused, onRequestSizeSelection }: HeroSplitProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
@@ -62,7 +63,7 @@ export default function HeroSplit({ product, onVideoEnd, isPaused, onAddToCart }
                                 </motion.div>
 
                                 <button
-                                    onClick={() => onAddToCart(product)}
+                                    onClick={() => onRequestSizeSelection(product)}
                                     className="bg-[#ededed] text-[#0D0D0D] px-8 py-3 text-sm font-medium tracking-wide hover:bg-white transition-colors duration-300"
                                 >
                                     ADD TO CART
@@ -91,7 +92,7 @@ export default function HeroSplit({ product, onVideoEnd, isPaused, onAddToCart }
                             crossOrigin="anonymous"
                             onEnded={onVideoEnd}
                         >
-                            <source src={product.videoUrl} type="video/mp4" />
+                            <source src={getOptimizedVideoUrl(product.videoUrl)} type="video/mp4" />
                         </video>
                     </div>
 
