@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Product, products } from "@/data/products";
 import { getOptimizedVideoUrl } from "@/lib/mediaUtils";
 import MobileProductGrid from "./MobileProductGrid";
+import SizeModal from "@/components/SizeModal";
 
 interface MobileWantsProps {
     product: Product;
@@ -16,9 +17,11 @@ interface MobileWantsProps {
 }
 
 export default function MobileWants({ product, viewMode, onToggleMode, onVideoEnd, onProductSelect, onAddToCart }: MobileWantsProps) {
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const gridRef = useRef<HTMLDivElement>(null);
     const [isButtonVisible, setIsButtonVisible] = useState(true);
+    const [modalProduct, setModalProduct] = useState<Product | null>(null);
 
     useEffect(() => {
         if (videoRef.current) {
@@ -46,17 +49,25 @@ export default function MobileWants({ product, viewMode, onToggleMode, onVideoEn
         if (onProductSelect) {
             onProductSelect(selectedProduct, index);
         }
+        // Scroll to top smoothly when a product is selected
+        scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleAddToCart = () => {
-        if (onAddToCart) {
-            // Default to size M for quick add in Wants mode
-            onAddToCart(product, 'M');
+        // 📸 Capture the product snapshot at the moment of click
+        setModalProduct(product);
+    };
+
+    const handleSizeSelect = (size: string) => {
+        if (onAddToCart && modalProduct) {
+            // ✅ Use the frozen snapshot, not the current product
+            onAddToCart(modalProduct, size);
         }
+        setModalProduct(null);
     };
 
     return (
-        <div className="h-full w-full bg-black overflow-x-hidden overflow-y-auto">
+        <div ref={scrollContainerRef} className="h-full w-full bg-black overflow-x-hidden overflow-y-auto">
             {/* Hero Video Section */}
             <div className="h-screen w-full relative">
                 {/* Full-screen Video */}
@@ -73,11 +84,11 @@ export default function MobileWants({ product, viewMode, onToggleMode, onVideoEn
 
                 {/* Top Toggle */}
                 <div className="fixed top-6 left-0 right-0 flex justify-center z-30">
-                    <div className="flex items-center bg-black/40 backdrop-blur-md rounded-full p-1">
+                    <div className="flex items-center bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl rounded-full p-1">
                         <button
                             onClick={() => onToggleMode('WANTS')}
                             className={`px-5 py-2 rounded-full text-xs font-bold tracking-widest transition-all duration-300 ${viewMode === 'WANTS'
-                                ? 'bg-violet-500 text-white'
+                                ? 'bg-white text-black shadow-lg'
                                 : 'text-white/70 hover:text-white'
                                 }`}
                         >
@@ -86,7 +97,7 @@ export default function MobileWants({ product, viewMode, onToggleMode, onVideoEn
                         <button
                             onClick={() => onToggleMode('NEEDS')}
                             className={`px-5 py-2 rounded-full text-xs font-bold tracking-widest transition-all duration-300 ${viewMode === 'NEEDS'
-                                ? 'bg-white text-black'
+                                ? 'bg-white text-black shadow-lg'
                                 : 'text-white/70 hover:text-white'
                                 }`}
                         >
@@ -108,21 +119,21 @@ export default function MobileWants({ product, viewMode, onToggleMode, onVideoEn
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2, duration: 0.6 }}
-                    className="absolute bottom-36 left-6 z-20"
+                    className="absolute bottom-48 left-6 z-20"
                 >
                     <h1 className="text-4xl font-black text-white tracking-tight mb-2 font-[family-name:var(--font-outfit)] uppercase">
                         {product.title}
                     </h1>
-                    <p className="text-xl text-white/90 font-medium">
+                    <p className="text-xl text-white/90 font-medium mb-2">
                         {product.price}
                     </p>
                 </motion.div>
 
                 {/* Add to Cart Button - Floating Glass Design */}
                 <div
-                    className={`absolute bottom-24 left-4 right-4 z-20 transition-all duration-300 ${isButtonVisible
-                            ? 'translate-y-0 opacity-100'
-                            : 'translate-y-full opacity-0 pointer-events-none'
+                    className={`absolute bottom-28 left-4 right-4 z-20 transition-all duration-300 ${isButtonVisible
+                        ? 'translate-y-0 opacity-100'
+                        : 'translate-y-full opacity-0 pointer-events-none'
                         }`}
                 >
                     <button
@@ -161,6 +172,13 @@ export default function MobileWants({ product, viewMode, onToggleMode, onVideoEn
                     darkMode
                 />
             </div>
+            {/* Size Modal - Uses frozen snapshot */}
+            <SizeModal
+                isOpen={modalProduct !== null}
+                onClose={() => setModalProduct(null)}
+                onSelectSize={handleSizeSelect}
+                product={modalProduct}
+            />
         </div>
     );
 }

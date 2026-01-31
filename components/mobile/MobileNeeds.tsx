@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Product, products } from "@/data/products";
 import MobileProductGrid from "./MobileProductGrid";
@@ -16,26 +16,9 @@ interface MobileNeedsProps {
 const sizes = ['S', 'M', 'L', 'XL'];
 
 export default function MobileNeeds({ product, viewMode, onToggleMode, onAddToCart, onProductSelect }: MobileNeedsProps) {
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
     const [isShaking, setIsShaking] = useState(false);
-    const [showStickyBtn, setShowStickyBtn] = useState(true);
-    const gridRef = useRef<HTMLDivElement>(null);
-
-    // IntersectionObserver to hide button when grid is visible
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                setShowStickyBtn(!entry.isIntersecting);
-            },
-            { threshold: 0.1 }
-        );
-
-        if (gridRef.current) {
-            observer.observe(gridRef.current);
-        }
-
-        return () => observer.disconnect();
-    }, []);
 
     const handleAddToCart = () => {
         if (!selectedSize) {
@@ -51,18 +34,20 @@ export default function MobileNeeds({ product, viewMode, onToggleMode, onAddToCa
         if (onProductSelect) {
             onProductSelect(selectedProduct, index);
         }
+        // Scroll to top smoothly when a product is selected
+        scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     return (
-        <div className="h-full w-full max-w-screen bg-white text-black overflow-x-hidden overflow-y-auto">
+        <div ref={scrollContainerRef} className="h-full w-full max-w-screen bg-white text-black overflow-x-hidden overflow-y-auto">
             {/* Top Toggle */}
             <div className="fixed top-6 left-0 right-0 flex justify-center z-30">
-                <div className="flex items-center bg-gray-100 rounded-full p-1 shadow-sm">
+                <div className="flex items-center bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl rounded-full p-1">
                     <button
                         onClick={() => onToggleMode('WANTS')}
                         className={`px-5 py-2 rounded-full text-xs font-bold tracking-widest transition-all duration-300 ${viewMode === 'WANTS'
-                                ? 'bg-black text-white'
-                                : 'text-gray-500 hover:text-black'
+                            ? 'bg-white text-black shadow-lg'
+                            : 'text-white/70 hover:text-white'
                             }`}
                     >
                         WANTS
@@ -70,8 +55,8 @@ export default function MobileNeeds({ product, viewMode, onToggleMode, onAddToCa
                     <button
                         onClick={() => onToggleMode('NEEDS')}
                         className={`px-5 py-2 rounded-full text-xs font-bold tracking-widest transition-all duration-300 ${viewMode === 'NEEDS'
-                                ? 'bg-black text-white'
-                                : 'text-gray-500 hover:text-black'
+                            ? 'bg-white text-black shadow-lg'
+                            : 'text-white/70 hover:text-white'
                             }`}
                     >
                         NEEDS
@@ -105,13 +90,15 @@ export default function MobileNeeds({ product, viewMode, onToggleMode, onAddToCa
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                        className="flex justify-center my-6 flex-1 items-center"
+                        className="flex justify-center my-6 flex-1 items-center overflow-hidden"
                     >
-                        <img
-                            src={product.gridThumbnail}
-                            alt={product.title}
-                            className="w-full max-w-[280px] aspect-square object-contain mx-auto drop-shadow-xl"
-                        />
+                        <div className="w-full max-w-[320px] aspect-square overflow-hidden">
+                            <img
+                                src={product.gridThumbnail}
+                                alt={product.title}
+                                className="w-full h-full object-contain scale-125 transition-transform duration-700 drop-shadow-xl"
+                            />
+                        </div>
                     </motion.div>
 
                     {/* 3. Tech Specs - 2x2 Grid */}
@@ -139,12 +126,12 @@ export default function MobileNeeds({ product, viewMode, onToggleMode, onAddToCa
                         </div>
                     </motion.div>
 
-                    {/* 4. Size Selector - With bottom margin for button gap */}
+                    {/* 4. Size Selector */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.3 }}
-                        className="mb-12"
+                        className="mb-6"
                     >
                         <p className="text-xs text-gray-400 uppercase tracking-wider mb-4 text-center">Select Size</p>
                         <motion.div
@@ -157,10 +144,10 @@ export default function MobileNeeds({ product, viewMode, onToggleMode, onAddToCa
                                     key={size}
                                     onClick={() => setSelectedSize(size)}
                                     className={`w-12 h-12 rounded-full border-2 transition-all duration-300 flex items-center justify-center text-sm font-semibold ${selectedSize === size
-                                            ? 'bg-black text-white border-black'
-                                            : isShaking
-                                                ? 'border-red-400 text-red-400'
-                                                : 'border-gray-200 text-black hover:border-black'
+                                        ? 'bg-black text-white border-black'
+                                        : isShaking
+                                            ? 'border-red-400 text-red-400'
+                                            : 'border-gray-200 text-black hover:border-black'
                                         }`}
                                 >
                                     {size}
@@ -171,32 +158,64 @@ export default function MobileNeeds({ product, viewMode, onToggleMode, onAddToCa
                             <p className="text-red-500 text-xs text-center mt-3">Please select a size</p>
                         )}
                     </motion.div>
+
+                    {/* 5. Add to Cart Button - Stable after sizes */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                        className="mb-12"
+                    >
+                        <button
+                            onClick={handleAddToCart}
+                            className="w-full bg-gray-900 text-white py-4 rounded-xl flex items-center justify-between px-6 shadow-lg hover:bg-black transition-colors"
+                        >
+                            <span className="font-bold tracking-widest text-sm">ADD TO CART</span>
+                            <span className="font-bold text-lg">{product.price}</span>
+                        </button>
+                    </motion.div>
                 </div>
 
-                {/* 5. Product Grid - Below the fold */}
-                <div ref={gridRef} className="-mx-2">
-                    <MobileProductGrid
-                        products={products.filter(p => p.id !== product.id)}
-                        onProductSelect={handleProductSelect}
-                    />
+                {/* 6. Product Grid - Below the fold - Split into sections */}
+                <div className="-mx-2">
+                    {/* HOODIES Section */}
+                    <div id="section-hoodies" className="mb-12 scroll-mt-24">
+                        <div className="px-4 mb-6">
+                            <div className="flex items-center gap-4">
+                                <div className="flex-1 h-[1px] bg-gray-200" />
+                                <span className="text-xs uppercase tracking-[0.3em] font-bold text-black">
+                                    Hoodies
+                                </span>
+                                <div className="flex-1 h-[1px] bg-gray-200" />
+                            </div>
+                        </div>
+                        <MobileProductGrid
+                            products={products.filter(p => p.title.toLowerCase().includes('hoodie') && p.id !== product.id)}
+                            onProductSelect={handleProductSelect}
+                            hideHeader
+                        />
+                    </div>
+
+                    {/* PANTS Section */}
+                    <div id="section-pants" className="mb-24 scroll-mt-24">
+                        <div className="px-4 mb-6">
+                            <div className="flex items-center gap-4">
+                                <div className="flex-1 h-[1px] bg-gray-200" />
+                                <span className="text-xs uppercase tracking-[0.3em] font-bold text-black">
+                                    Sweatpants
+                                </span>
+                                <div className="flex-1 h-[1px] bg-gray-200" />
+                            </div>
+                        </div>
+                        <MobileProductGrid
+                            products={products.filter(p => p.title.toLowerCase().includes('pant') && p.id !== product.id)}
+                            onProductSelect={handleProductSelect}
+                            hideHeader
+                        />
+                    </div>
                 </div>
             </div>
 
-            {/* Fixed Add to Cart Button - Smart Visibility */}
-            <div
-                className={`fixed bottom-24 left-4 right-4 z-40 transition-all duration-500 transform ${showStickyBtn
-                        ? 'translate-y-0 opacity-100'
-                        : 'translate-y-20 opacity-0 pointer-events-none'
-                    }`}
-            >
-                <button
-                    onClick={handleAddToCart}
-                    className="w-full bg-gray-900 text-white py-4 rounded-xl flex items-center justify-between px-6 shadow-2xl hover:bg-black transition-colors"
-                >
-                    <span className="font-bold tracking-widest text-sm">ADD TO CART</span>
-                    <span className="font-bold text-lg">{product.price}</span>
-                </button>
-            </div>
         </div>
     );
 }

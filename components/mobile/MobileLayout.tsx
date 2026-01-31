@@ -7,6 +7,7 @@ import MobileWants from "./MobileWants";
 import MobileNeeds from "./MobileNeeds";
 import MobileGrid from "./MobileGrid";
 import MobileDock from "./MobileDock";
+import MobileMenu from "./MobileMenu";
 import CartDrawer, { CartItem } from "@/components/CartDrawer";
 
 interface MobileLayoutProps {
@@ -29,6 +30,7 @@ export default function MobileLayout({
     const [viewMode, setViewMode] = useState<'WANTS' | 'NEEDS'>('WANTS');
     const [isGridOpen, setIsGridOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [currentProduct, setCurrentProduct] = useState<Product>(initialProduct);
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -42,6 +44,24 @@ export default function MobileLayout({
         const nextIndex = (currentIndex + 1) % products.length;
         setCurrentIndex(nextIndex);
         setCurrentProduct(products[nextIndex]);
+    };
+
+    // Navigation handler for the burger menu
+    const handleNavigation = (section: string) => {
+        setIsMenuOpen(false); // Close menu first
+
+        if (section === 'home') {
+            setViewMode('WANTS'); // Go to Reels/Wants view
+        } else {
+            setViewMode('NEEDS'); // Go to Grid/Needs view
+            // Wait for render, then scroll to section
+            setTimeout(() => {
+                const element = document.getElementById(`section-${section}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 300); // 300ms delay to ensure 'Needs' view is fully mounted
+        }
     };
 
     return (
@@ -113,11 +133,19 @@ export default function MobileLayout({
                 onUpdateItemSize={onUpdateItemSize}
             />
 
+            {/* Mobile Menu Overlay */}
+            <MobileMenu
+                isOpen={isMenuOpen}
+                onClose={() => setIsMenuOpen(false)}
+                onNavigate={handleNavigation}
+            />
+
             {/* Bottom Dock */}
             <MobileDock
                 viewMode={viewMode}
                 onGridToggle={() => setIsGridOpen(!isGridOpen)}
                 onCartToggle={() => setIsCartOpen(!isCartOpen)}
+                onOpenMenu={() => setIsMenuOpen(true)}
                 cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
             />
         </div>

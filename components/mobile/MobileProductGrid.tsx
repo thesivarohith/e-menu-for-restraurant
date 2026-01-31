@@ -7,19 +7,22 @@ interface MobileProductGridProps {
     products: Product[];
     onProductSelect: (product: Product, index: number) => void;
     darkMode?: boolean;
+    hideHeader?: boolean;
 }
 
-export default function MobileProductGrid({ products, onProductSelect, darkMode = false }: MobileProductGridProps) {
+export default function MobileProductGrid({ products, onProductSelect, darkMode = false, hideHeader = false }: MobileProductGridProps) {
     return (
         <div className="w-full px-4">
-            {/* Section Header */}
-            <div className="flex items-center gap-4 mb-6">
-                <div className={`flex-1 h-[1px] ${darkMode ? 'bg-white/20' : 'bg-gray-200'}`} />
-                <span className={`text-xs uppercase tracking-[0.3em] font-medium ${darkMode ? 'text-white/50' : 'text-gray-400'}`}>
-                    Archive
-                </span>
-                <div className={`flex-1 h-[1px] ${darkMode ? 'bg-white/20' : 'bg-gray-200'}`} />
-            </div>
+            {/* Section Header - Show only if not hidden */}
+            {!hideHeader && (
+                <div className="flex items-center gap-4 mb-6">
+                    <div className={`flex-1 h-[1px] ${darkMode ? 'bg-white/20' : 'bg-gray-200'}`} />
+                    <span className={`text-xs uppercase tracking-[0.3em] font-medium ${darkMode ? 'text-white/50' : 'text-gray-400'}`}>
+                        Archive
+                    </span>
+                    <div className={`flex-1 h-[1px] ${darkMode ? 'bg-white/20' : 'bg-gray-200'}`} />
+                </div>
+            )}
 
             {/* 2-Column Grid */}
             <div className="grid grid-cols-2 gap-4">

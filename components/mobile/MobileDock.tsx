@@ -6,10 +6,11 @@ interface MobileDockProps {
     viewMode: 'WANTS' | 'NEEDS';
     onGridToggle: () => void;
     onCartToggle: () => void;
+    onOpenMenu: () => void;
     cartCount: number;
 }
 
-export default function MobileDock({ viewMode, onGridToggle, onCartToggle, cartCount }: MobileDockProps) {
+export default function MobileDock({ viewMode, onGridToggle, onCartToggle, onOpenMenu, cartCount }: MobileDockProps) {
     const isDark = viewMode === 'WANTS';
 
     return (
@@ -20,12 +21,12 @@ export default function MobileDock({ viewMode, onGridToggle, onCartToggle, cartC
             transition={{ delay: 0.3, duration: 0.5 }}
         >
             <motion.div
-                className={`flex items-center gap-2 px-4 py-3 rounded-2xl backdrop-blur-xl transition-all duration-300 ${isDark
-                    ? 'bg-[#1a1a1a]/90 border border-white/10'
-                    : 'bg-white/90 border border-gray-200 shadow-lg'
+                className={`flex items-center gap-2 px-4 py-3 rounded-2xl backdrop-blur-xl transition-all duration-300 shadow-2xl ${isDark
+                    ? 'bg-black/30 border border-white/10'
+                    : 'bg-white/30 border border-gray-200/50'
                     }`}
                 animate={{
-                    backgroundColor: isDark ? 'rgba(26, 26, 26, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                    backgroundColor: isDark ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)',
                 }}
             >
 
@@ -67,6 +68,7 @@ export default function MobileDock({ viewMode, onGridToggle, onCartToggle, cartC
 
                 {/* Menu Icon */}
                 <button
+                    onClick={onOpenMenu}
                     className={`p-3 rounded-xl transition-colors ${isDark ? 'hover:bg-white/10' : 'hover:bg-gray-100'
                         }`}
                 >

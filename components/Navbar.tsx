@@ -2,10 +2,11 @@ import { motion } from "framer-motion";
 
 interface NavbarProps {
     onCartClick?: () => void;
+    onMenuClick?: () => void;
     cartCount?: number;
 }
 
-export default function Navbar({ onCartClick, cartCount = 0 }: NavbarProps) {
+export default function Navbar({ onCartClick, onMenuClick, cartCount = 0 }: NavbarProps) {
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 px-12 py-8 flex items-start justify-between pointer-events-none mix-blend-difference text-white">
             {/* Brand Logo - Top Left */}
@@ -45,7 +46,10 @@ export default function Navbar({ onCartClick, cartCount = 0 }: NavbarProps) {
                 </button>
 
                 {/* Burger Icon */}
-                <button className="hover:opacity-70 transition-opacity">
+                <button
+                    onClick={onMenuClick}
+                    className="hover:opacity-70 transition-opacity"
+                >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="3" y1="12" x2="21" y2="12" />
                         <line x1="3" y1="6" x2="21" y2="6" />

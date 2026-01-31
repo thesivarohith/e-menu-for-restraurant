@@ -1,16 +1,8 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Product } from "@/data/products";
-
-export interface CartItem {
-    id: number;
-    cartItemId: string;
-    title: string;
-    price: string;
-    image: string;
-    size: string;
-    quantity: number;
-}
+import { CartItem } from "@/context/CartContext";
 
 interface CartDrawerProps {
     isOpen: boolean;
@@ -24,6 +16,7 @@ interface CartDrawerProps {
 const sizes = ['S', 'M', 'L', 'XL'];
 
 export default function CartDrawer({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem, onUpdateItemSize }: CartDrawerProps) {
+    const router = useRouter();
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     // Calculate subtotal
     const subtotal = items.reduce((acc, item) => {
@@ -120,8 +113,8 @@ export default function CartDrawer({ isOpen, onClose, items, onUpdateQuantity, o
                                                                         setOpenDropdown(null);
                                                                     }}
                                                                     className={`w-full text-left px-4 py-2.5 text-xs font-semibold tracking-widest uppercase transition-colors duration-150 ${item.size === size
-                                                                            ? 'bg-white text-gray-900'
-                                                                            : 'text-white hover:bg-gray-800'
+                                                                        ? 'bg-white text-gray-900'
+                                                                        : 'text-white hover:bg-gray-800'
                                                                         }`}
                                                                 >
                                                                     SIZE {size}
@@ -177,7 +170,13 @@ export default function CartDrawer({ isOpen, onClose, items, onUpdateQuantity, o
                                 <span className="text-lg font-bold text-gray-900 font-[family-name:var(--font-outfit)]">₹{subtotal.toLocaleString()}</span>
                             </div>
 
-                            <button className="w-full bg-black text-white py-5 text-sm font-bold tracking-[0.2em] hover:bg-gray-900 transition-colors uppercase">
+                            <button
+                                onClick={() => {
+                                    onClose();
+                                    router.push('/checkout');
+                                }}
+                                className="w-full bg-black text-white py-5 text-sm font-bold tracking-[0.2em] hover:bg-gray-900 transition-colors uppercase"
+                            >
                                 Proceed to Checkout
                             </button>
 
