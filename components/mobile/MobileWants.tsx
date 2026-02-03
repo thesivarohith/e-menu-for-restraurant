@@ -144,12 +144,20 @@ export default function MobileWants({ product, viewMode, onToggleMode, onVideoEn
                         }`}
                 >
                     {product.isJoinSlide ? (
-                        <Link
-                            href="/login"
-                            className="flex items-center justify-center w-full backdrop-blur-md bg-white text-black py-4 rounded-sm font-bold tracking-widest text-sm uppercase transition-all duration-500 hover:bg-white/90"
-                        >
-                            SIGN IN / JOIN THE CLUB
-                        </Link>
+                        <div className="space-y-4">
+                            <Link
+                                href="/login"
+                                className="flex items-center justify-center w-full backdrop-blur-md bg-white text-black py-4 rounded-sm font-bold tracking-widest text-sm uppercase transition-all duration-500 hover:bg-white/90"
+                            >
+                                SIGN IN / JOIN THE CLUB
+                            </Link>
+                            <p className="text-center text-[10px] tracking-[0.2em] text-white/50 uppercase">
+                                Don't have an account?{' '}
+                                <Link href="/signup" className="text-white font-bold hover:underline underline-offset-4">
+                                    Join the Inner Circle
+                                </Link>
+                            </p>
+                        </div>
                     ) : (
                         <button
                             onClick={handleAddToCart}
