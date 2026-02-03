@@ -54,6 +54,23 @@ export default function LoginPage() {
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     className="mx-auto w-full max-w-[480px]"
                 >
+                    {/* Exit Button */}
+                    <Link
+                        href="/"
+                        className="group mb-8 flex w-fit items-center space-x-2 text-[#888888] transition-colors hover:text-white"
+                    >
+                        <svg
+                            className="h-5 w-5 transition-transform group-hover:-translate-x-1"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        <span className="text-xs font-bold tracking-widest uppercase">Back to Home</span>
+                    </Link>
+
                     {/* Header Section */}
                     <div className="mb-[30px]">
                         <h1 className="mb-4 text-[48px] font-bold uppercase leading-none tracking-tight text-white">
