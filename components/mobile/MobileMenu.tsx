@@ -8,6 +8,7 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ isOpen, onClose, onNavigate }: MobileMenuProps) {
     const menuItems = [
+        { label: "JOIN THE CLUB", section: "login" },
         { label: "HOME", section: "home" },
         { label: "HOODIES", section: "hoodies" },
         { label: "SWEATPANTS", section: "pants" },

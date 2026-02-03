@@ -3,7 +3,7 @@
 import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Product, products } from "@/data/products";
+import { Product } from "@/data/products";
 import { getOptimizedVideoUrl } from "@/lib/mediaUtils";
 import MobileProductGrid from "./MobileProductGrid";
 import SizeModal from "@/components/SizeModal";
@@ -15,9 +15,10 @@ interface MobileWantsProps {
     onVideoEnd: () => void;
     onProductSelect?: (product: Product, index: number) => void;
     onAddToCart?: (product: Product, size: string) => void;
+    products: Product[];
 }
 
-export default function MobileWants({ product, viewMode, onToggleMode, onVideoEnd, onProductSelect, onAddToCart }: MobileWantsProps) {
+export default function MobileWants({ product, viewMode, onToggleMode, onVideoEnd, onProductSelect, onAddToCart, products }: MobileWantsProps) {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const gridRef = useRef<HTMLDivElement>(null);

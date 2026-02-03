@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Product, products } from "@/data/products";
+import { Product } from "@/data/products";
 import MobileProductGrid from "./MobileProductGrid";
 
 interface MobileNeedsProps {

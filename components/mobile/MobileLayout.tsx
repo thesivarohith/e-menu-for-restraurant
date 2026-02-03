@@ -97,6 +97,7 @@ export default function MobileLayout({
                             onVideoEnd={handleVideoEnd}
                             onProductSelect={handleProductSelect}
                             onAddToCart={onAddToCart}
+                            products={mobileProducts}
                         />
                     </motion.div>
                 ) : (
