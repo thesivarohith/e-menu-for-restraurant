@@ -28,12 +28,13 @@ export default function MobileLayout({
     onRemoveItem,
     onUpdateItemSize
 }: MobileLayoutProps) {
+    const mobileProducts = products.filter(p => !p.isJoinSlide);
     const [viewMode, setViewMode] = useState<'WANTS' | 'NEEDS'>('WANTS');
     const [isGridOpen, setIsGridOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [currentProduct, setCurrentProduct] = useState<Product>(initialProduct);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentProduct, setCurrentProduct] = useState<Product>(mobileProducts[0]);
 
     const handleProductSelect = (product: Product, index: number) => {
         setCurrentProduct(product);
@@ -42,9 +43,9 @@ export default function MobileLayout({
     };
 
     const handleVideoEnd = () => {
-        const nextIndex = (currentIndex + 1) % products.length;
+        const nextIndex = (currentIndex + 1) % mobileProducts.length;
         setCurrentIndex(nextIndex);
-        setCurrentProduct(products[nextIndex]);
+        setCurrentProduct(mobileProducts[nextIndex]);
     };
 
     // Navigation handler for the burger menu
@@ -113,6 +114,7 @@ export default function MobileLayout({
                             onToggleMode={setViewMode}
                             onAddToCart={onAddToCart}
                             onProductSelect={handleProductSelect}
+                            products={mobileProducts}
                         />
                     </motion.div>
                 )}
@@ -122,7 +124,7 @@ export default function MobileLayout({
             <MobileGrid
                 isOpen={isGridOpen}
                 onClose={() => setIsGridOpen(false)}
-                products={products}
+                products={mobileProducts}
                 onProductSelect={handleProductSelect}
             />
 

@@ -11,11 +11,12 @@ interface MobileNeedsProps {
     onToggleMode: (mode: 'WANTS' | 'NEEDS') => void;
     onAddToCart: (product: Product, size: string) => void;
     onProductSelect?: (product: Product, index: number) => void;
+    products: Product[];
 }
 
 const sizes = ['S', 'M', 'L', 'XL'];
 
-export default function MobileNeeds({ product, viewMode, onToggleMode, onAddToCart, onProductSelect }: MobileNeedsProps) {
+export default function MobileNeeds({ product, viewMode, onToggleMode, onAddToCart, onProductSelect, products }: MobileNeedsProps) {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
     const [isShaking, setIsShaking] = useState(false);
