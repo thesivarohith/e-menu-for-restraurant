@@ -57,18 +57,18 @@ export default function LoginPage() {
                     {/* Exit Button */}
                     <Link
                         href="/"
-                        className="group mb-8 flex w-fit items-center space-x-2 text-[#888888] transition-colors hover:text-white"
+                        className="fixed top-6 left-6 md:static z-50 group flex items-center justify-center h-10 w-10 md:w-auto md:h-auto md:mb-8 md:space-x-2 text-white md:text-[#888888] bg-white/10 md:bg-transparent backdrop-blur-lg md:backdrop-blur-none rounded-full md:rounded-none transition-all hover:text-white"
                     >
                         <svg
                             className="h-5 w-5 transition-transform group-hover:-translate-x-1"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
-                            strokeWidth={2}
+                            strokeWidth={2.5}
                         >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
-                        <span className="text-xs font-bold tracking-widest uppercase">Back to Home</span>
+                        <span className="hidden md:block text-xs font-bold tracking-widest uppercase">Back to Home</span>
                     </Link>
 
                     {/* Header Section */}
