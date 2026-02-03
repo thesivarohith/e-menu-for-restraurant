@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Product } from "@/data/products";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
 
 interface NeedsViewProps {
     product: Product;
@@ -11,10 +12,19 @@ interface NeedsViewProps {
 const sizes = ['S', 'M', 'L', 'XL'];
 
 export default function NeedsView({ product, isVisible, onAddToCart }: NeedsViewProps) {
+    const { user } = useAuth();
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
     const [isShaking, setIsShaking] = useState(false);
+    const [showAuthToast, setShowAuthToast] = useState(false);
 
     const handleAddToCart = () => {
+        // Auth check - show toast if not logged in
+        if (!user) {
+            setShowAuthToast(true);
+            setTimeout(() => setShowAuthToast(false), 3000);
+            return;
+        }
+
         if (!selectedSize) {
             // Trigger shake animation
             setIsShaking(true);
@@ -24,6 +34,7 @@ export default function NeedsView({ product, isVisible, onAddToCart }: NeedsView
         onAddToCart(product, selectedSize);
         setSelectedSize(null); // Reset for next product
     };
+
 
     return (
         <AnimatePresence>
@@ -127,6 +138,18 @@ export default function NeedsView({ product, isVisible, onAddToCart }: NeedsView
                             />
                         </motion.div>
                     </div>
+                </motion.div>
+            )}
+
+            {/* Auth Required Toast */}
+            {showAuthToast && (
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 50 }}
+                    className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] bg-black text-white px-6 py-3 rounded-full shadow-xl text-sm font-medium tracking-wide"
+                >
+                    Join the Club to add to cart
                 </motion.div>
             )}
         </AnimatePresence>

@@ -19,6 +19,7 @@ interface CartContextType {
     updateQuantity: (cartItemId: string, delta: number) => void;
     removeFromCart: (cartItemId: string) => void;
     updateItemSize: (cartItemId: string, newSize: string) => void;
+    clearCart: () => void;
     isCartOpen: boolean;
     setIsCartOpen: (open: boolean) => void;
     cartCount: number;
@@ -108,6 +109,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
         return acc + (priceNum * item.quantity);
     }, 0);
 
+    // Clear entire cart (used on logout)
+    const clearCart = () => {
+        setCartItems([]);
+    };
+
     return (
         <CartContext.Provider value={{
             cartItems,
@@ -115,6 +121,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             updateQuantity,
             removeFromCart,
             updateItemSize,
+            clearCart,
             isCartOpen,
             setIsCartOpen,
             cartCount,

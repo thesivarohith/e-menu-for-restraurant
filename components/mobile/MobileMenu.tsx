@@ -1,5 +1,9 @@
 "use client";
 
+import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/CartContext";
+import { useRouter } from "next/navigation";
+
 interface MobileMenuProps {
     isOpen: boolean;
     onClose: () => void;
@@ -7,18 +11,43 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ isOpen, onClose, onNavigate }: MobileMenuProps) {
+    const { user, logout } = useAuth();
+    const { clearCart } = useCart();
+    const router = useRouter();
+
+    // Menu items - removed "JOIN THE CLUB" as per task 4
     const menuItems = [
-        { label: "JOIN THE CLUB", section: "login" },
         { label: "HOME", section: "home" },
         { label: "HOODIES", section: "hoodies" },
         { label: "SWEATPANTS", section: "pants" },
     ];
 
     const secondaryItems = [
-        { icon: "user", label: "MY ACCOUNT" },
-        { icon: "package", label: "ORDER TRACKING" },
-        { icon: "support", label: "CONTACT OR SUPPORT" },
+        { icon: "user", label: "MY ACCOUNT", action: "profile" },
+        { icon: "package", label: "ORDER TRACKING", action: null },
+        { icon: "support", label: "CONTACT OR SUPPORT", action: null },
     ];
+
+    // Handle secondary item click
+    const handleSecondaryClick = (action: string | null) => {
+        if (action === "profile") {
+            onClose();
+            router.push('/checkout');
+        }
+    };
+
+    // Logout handler - clears cart and signs out
+    const handleLogout = async () => {
+        try {
+            clearCart(); // Clear cart on logout
+            await logout();
+            onClose();
+            router.push('/');
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
+
 
     return (
         // Unified Container - Always rendered, visibility controlled by CSS
@@ -100,6 +129,7 @@ export default function MobileMenu({ isOpen, onClose, onNavigate }: MobileMenuPr
                         {secondaryItems.map((item, index) => (
                             <button
                                 key={item.label}
+                                onClick={() => handleSecondaryClick(item.action)}
                                 className={`flex items-center gap-4 text-white/50 hover:text-white active:text-white transition-all duration-300 hover:translate-x-1 ${isOpen ? 'opacity-100' : 'opacity-0'
                                     }`}
                                 style={{ transitionDelay: isOpen ? `${380 + index * 40}ms` : '0ms' }}
@@ -147,12 +177,24 @@ export default function MobileMenu({ isOpen, onClose, onNavigate }: MobileMenuPr
                         >
                             TIKTOK
                         </a>
-                        <a
-                            href="#"
-                            className="text-white/50 hover:text-white text-xs font-medium tracking-[0.15em] transition-colors ml-auto"
-                        >
-                            LOG OUT
-                        </a>
+                        {/* Log Out Button - Only shown when user is logged in */}
+                        {user && (
+                            <button
+                                onClick={handleLogout}
+                                className="text-white/50 hover:text-white text-xs font-medium tracking-[0.15em] transition-colors ml-auto"
+                            >
+                                LOG OUT
+                            </button>
+                        )}
+                        {/* Login Link - Shown when user is logged out */}
+                        {!user && (
+                            <button
+                                onClick={() => onNavigate('login')}
+                                className="text-white/50 hover:text-white text-xs font-medium tracking-[0.15em] transition-colors ml-auto"
+                            >
+                                LOG IN
+                            </button>
+                        )}
                     </div>
 
                     {/* Copyright */}

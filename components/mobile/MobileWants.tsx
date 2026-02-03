@@ -1,12 +1,13 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Product } from "@/data/products";
 import { getOptimizedVideoUrl } from "@/lib/mediaUtils";
 import MobileProductGrid from "./MobileProductGrid";
 import SizeModal from "@/components/SizeModal";
+import { useAuth } from "@/context/AuthContext";
 
 interface MobileWantsProps {
     product: Product;
@@ -19,11 +20,13 @@ interface MobileWantsProps {
 }
 
 export default function MobileWants({ product, viewMode, onToggleMode, onVideoEnd, onProductSelect, onAddToCart, products }: MobileWantsProps) {
+    const { user } = useAuth();
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const gridRef = useRef<HTMLDivElement>(null);
     const [isButtonVisible, setIsButtonVisible] = useState(true);
     const [modalProduct, setModalProduct] = useState<Product | null>(null);
+    const [showAuthToast, setShowAuthToast] = useState(false);
 
     useEffect(() => {
         if (videoRef.current) {
@@ -56,6 +59,12 @@ export default function MobileWants({ product, viewMode, onToggleMode, onVideoEn
     };
 
     const handleAddToCart = () => {
+        // Auth check - show toast if not logged in
+        if (!user) {
+            setShowAuthToast(true);
+            setTimeout(() => setShowAuthToast(false), 3000);
+            return;
+        }
         // 📸 Capture the product snapshot at the moment of click
         setModalProduct(product);
     };
@@ -67,6 +76,7 @@ export default function MobileWants({ product, viewMode, onToggleMode, onVideoEn
         }
         setModalProduct(null);
     };
+
 
     return (
         <div ref={scrollContainerRef} className="h-full w-full bg-black overflow-x-hidden overflow-y-auto">
@@ -204,6 +214,20 @@ export default function MobileWants({ product, viewMode, onToggleMode, onVideoEn
                 onSelectSize={handleSizeSelect}
                 product={modalProduct}
             />
+
+            {/* Auth Required Toast */}
+            <AnimatePresence>
+                {showAuthToast && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 50 }}
+                        className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[100] bg-white text-black px-6 py-3 rounded-full shadow-xl text-sm font-medium tracking-wide"
+                    >
+                        Join the Club to add to cart
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

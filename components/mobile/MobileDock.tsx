@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 interface MobileDockProps {
     viewMode: 'WANTS' | 'NEEDS';
@@ -12,6 +13,7 @@ interface MobileDockProps {
 }
 
 export default function MobileDock({ viewMode, onGridToggle, onCartToggle, onOpenMenu, cartCount }: MobileDockProps) {
+    const { user } = useAuth();
     const isDark = viewMode === 'WANTS';
 
     return (
@@ -51,20 +53,34 @@ export default function MobileDock({ viewMode, onGridToggle, onCartToggle, onOpe
                         </span>
                     )}
                 </button>
-                {/* Mail Icon */}
+
+                {/* Profile Icon (logged in) / Mail Icon (logged out) */}
                 <Link
-                    href="/login"
+                    href={user ? "/checkout" : "/login"}
                     className={`p-3 rounded-xl transition-colors ${isDark ? 'hover:bg-white/10' : 'hover:bg-gray-100'
                         }`}
                 >
-                    <svg
-                        className={`w-5 h-5 ${isDark ? 'text-white' : 'text-black'}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
+                    {user ? (
+                        // Profile Icon - shown when logged in
+                        <svg
+                            className={`w-5 h-5 ${isDark ? 'text-white' : 'text-black'}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    ) : (
+                        // Mail Icon - shown when logged out
+                        <svg
+                            className={`w-5 h-5 ${isDark ? 'text-white' : 'text-black'}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    )}
                 </Link>
 
 
@@ -87,3 +103,4 @@ export default function MobileDock({ viewMode, onGridToggle, onCartToggle, onOpe
         </motion.div>
     );
 }
+

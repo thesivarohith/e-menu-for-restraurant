@@ -3,26 +3,67 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
+    const router = useRouter();
+    const { signIn, signInWithGoogle } = useAuth();
+
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setError(null);
 
-        // Simulate API call
-        setTimeout(() => {
-            setIsSubmitting(false);
+        try {
+            await signIn(email, password);
             setShowSuccess(true);
-            setTimeout(() => setShowSuccess(false), 3000);
-        }, 1500);
+            setTimeout(() => {
+                router.push('/');
+            }, 1500);
+        } catch (err: unknown) {
+            const errorMessage = err instanceof Error ? err.message : 'Failed to sign in';
+            // Clean up Firebase error messages
+            if (errorMessage.includes('auth/invalid-credential')) {
+                setError('Invalid email or password');
+            } else if (errorMessage.includes('auth/user-not-found')) {
+                setError('No account found with this email');
+            } else if (errorMessage.includes('auth/wrong-password')) {
+                setError('Incorrect password');
+            } else if (errorMessage.includes('auth/too-many-requests')) {
+                setError('Too many attempts. Please try again later');
+            } else {
+                setError('Failed to sign in. Please try again');
+            }
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleGoogleSignIn = async () => {
+        setError(null);
+        try {
+            await signInWithGoogle();
+            setShowSuccess(true);
+            setTimeout(() => {
+                router.push('/');
+            }, 1500);
+        } catch (err: unknown) {
+            const errorMessage = err instanceof Error ? err.message : 'Failed to sign in with Google';
+            if (errorMessage.includes('auth/popup-closed-by-user')) {
+                setError('Sign-in cancelled');
+            } else {
+                setError('Failed to sign in with Google');
+            }
+        }
     };
 
     return (
@@ -80,6 +121,20 @@ export default function LoginPage() {
                             Sign in to access your exclusive member benefits.
                         </p>
                     </div>
+
+                    {/* Error Message */}
+                    <AnimatePresence>
+                        {error && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="mb-5 rounded-[4px] border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400"
+                            >
+                                {error}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
                     {/* Login Form */}
                     <form onSubmit={handleSubmit} className="mb-5 space-y-5">
@@ -209,7 +264,11 @@ export default function LoginPage() {
                             </svg>
                             <span className="text-sm font-medium text-white">Apple</span>
                         </button>
-                        <button className="flex flex-1 items-center justify-center space-x-2 rounded-[4px] border border-[#333333] p-3 transition-all hover:border-white hover:bg-white/5 hover:-translate-y-0.5 active:translate-y-0">
+                        <button
+                            onClick={handleGoogleSignIn}
+                            type="button"
+                            className="flex flex-1 items-center justify-center space-x-2 rounded-[4px] border border-[#333333] p-3 transition-all hover:border-white hover:bg-white/5 hover:-translate-y-0.5 active:translate-y-0"
+                        >
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
@@ -241,7 +300,10 @@ export default function LoginPage() {
                         exit={{ opacity: 0, x: 400 }}
                         className="fixed right-5 top-5 z-[1000] flex items-center space-x-3 rounded-lg bg-[#4CAF50]/95 p-4 text-white shadow-lg"
                     >
-                        <span className="material-icons">check_circle</span>
+                        <svg className="w-6 h-6 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
                         <div>
                             <div className="font-semibold">Welcome back!</div>
                             <div className="text-[13px] opacity-90">Signed in as {email}</div>
@@ -252,3 +314,4 @@ export default function LoginPage() {
         </div>
     );
 }
+

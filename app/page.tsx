@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import HeroSplit from "@/components/HeroSplit";
 import Navbar from "@/components/Navbar";
 import ProductGrid from "@/components/ProductGrid";
@@ -15,11 +15,16 @@ import MobileLayout from "@/components/mobile/MobileLayout";
 import MobileMenu from "@/components/mobile/MobileMenu";
 import { products, Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [viewMode, setViewMode] = useState<'WANTS' | 'NEEDS'>('WANTS');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showAuthToast, setShowAuthToast] = useState(false);
+
+  // Auth context
+  const { user } = useAuth();
 
   // Use global cart context
   const {
@@ -51,6 +56,12 @@ export default function Home() {
 
   // Handle size selection request from WANTS mode (HeroSplit)
   const handleRequestSizeSelection = (product: Product) => {
+    // Auth check
+    if (!user) {
+      setShowAuthToast(true);
+      setTimeout(() => setShowAuthToast(false), 3000);
+      return;
+    }
     setPendingProduct(product);
     setIsSizeModalOpen(true);
   };
@@ -70,6 +81,8 @@ export default function Home() {
     if (section === 'home') {
       setViewMode('WANTS'); // Go to WANTS view (Hero)
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (section === 'login') {
+      window.location.href = '/login';
     } else {
       // For hoodies/pants, scroll to specific section in the product grid
       setTimeout(() => {
@@ -159,6 +172,20 @@ export default function Home() {
           <ProductGrid products={products} onProductClick={handleProductClick} onAddToCart={handleRequestSizeSelection} />
         </div>
       </div>
+
+      {/* Auth Required Toast */}
+      <AnimatePresence>
+        {showAuthToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] bg-black text-white px-6 py-3 rounded-full shadow-xl text-sm font-medium tracking-wide"
+          >
+            Join the Club to add to cart
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
