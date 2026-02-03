@@ -120,14 +120,20 @@ export default function MobileWants({ product, viewMode, onToggleMode, onVideoEn
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2, duration: 0.6 }}
-                    className="absolute bottom-48 left-6 z-20"
+                    className={`absolute ${product.isJoinSlide ? 'bottom-56' : 'bottom-48'} left-6 right-6 z-20`}
                 >
-                    <h1 className="text-4xl font-black text-white tracking-tight mb-2 font-[family-name:var(--font-outfit)] uppercase">
+                    <h1 className={`${product.isJoinSlide ? 'text-5xl' : 'text-4xl'} font-black text-white tracking-tight mb-2 font-[family-name:var(--font-outfit)] uppercase leading-none`}>
                         {product.title}
                     </h1>
-                    <p className="text-xl text-white/90 font-medium mb-2">
-                        {product.price}
-                    </p>
+                    {product.isJoinSlide ? (
+                        <p className="text-sm text-white/70 font-light tracking-widest uppercase mt-4 max-w-[280px] leading-relaxed">
+                            {product.description}
+                        </p>
+                    ) : (
+                        <p className="text-xl text-white/90 font-medium mb-2">
+                            {product.price}
+                        </p>
+                    )}
                 </motion.div>
 
                 {/* Add to Cart Button - Floating Glass Design */}
