@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from "react";
+import Link from "next/link";
 import { Product } from "@/data/products";
 import { AnimatePresence, motion } from "framer-motion";
 import { getOptimizedVideoUrl } from "@/lib/mediaUtils";
@@ -14,14 +15,24 @@ export default function HeroSplit({ product, onVideoEnd, isPaused, onRequestSize
     const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        if (videoRef.current) {
-            if (isPaused) {
-                videoRef.current.pause();
-            } else {
-                videoRef.current.play();
+        const video = videoRef.current;
+        if (!video) return;
+
+        if (isPaused) {
+            video.pause();
+        } else {
+            // Catch the AbortError that occurs when video is removed during play
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch((error) => {
+                    // Ignore AbortError - this happens when the video is removed from DOM
+                    if (error.name !== 'AbortError') {
+                        console.error('Video play error:', error);
+                    }
+                });
             }
         }
-    }, [isPaused]);
+    }, [isPaused, product.id]);
 
     return (
         <div className="absolute inset-0 h-screen w-full flex overflow-hidden bg-[#0D0D0D]">
@@ -56,18 +67,29 @@ export default function HeroSplit({ product, onVideoEnd, isPaused, onRequestSize
                             </motion.p>
 
                             <div className="flex items-center gap-8">
-                                <motion.div
-                                    className="text-lg font-light opacity-60 font-[family-name:var(--font-outfit)]"
-                                >
-                                    {product.price}
-                                </motion.div>
+                                {!product.isJoinSlide && (
+                                    <motion.div
+                                        className="text-lg font-light opacity-60 font-[family-name:var(--font-outfit)]"
+                                    >
+                                        {product.price}
+                                    </motion.div>
+                                )}
 
-                                <button
-                                    onClick={() => onRequestSizeSelection(product)}
-                                    className="bg-[#ededed] text-[#0D0D0D] px-8 py-3 text-sm font-medium tracking-wide hover:bg-white transition-colors duration-300"
-                                >
-                                    ADD TO CART
-                                </button>
+                                {product.isJoinSlide ? (
+                                    <Link
+                                        href="/login"
+                                        className="bg-[#ededed] text-[#0D0D0D] px-8 py-3 text-sm font-medium tracking-wide hover:bg-white transition-colors duration-300"
+                                    >
+                                        SIGN IN
+                                    </Link>
+                                ) : (
+                                    <button
+                                        onClick={() => onRequestSizeSelection(product)}
+                                        className="bg-[#ededed] text-[#0D0D0D] px-8 py-3 text-sm font-medium tracking-wide hover:bg-white transition-colors duration-300"
+                                    >
+                                        ADD TO CART
+                                    </button>
+                                )}
                             </div>
                         </motion.div>
                     </motion.div>
