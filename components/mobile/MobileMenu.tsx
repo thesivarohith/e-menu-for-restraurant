@@ -8,6 +8,7 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ isOpen, onClose, onNavigate }: MobileMenuProps) {
     const menuItems = [
+        { label: "JOIN THE CLUB", section: "login" },
         { label: "HOME", section: "home" },
         { label: "HOODIES", section: "hoodies" },
         { label: "SWEATPANTS", section: "pants" },
@@ -69,8 +70,8 @@ export default function MobileMenu({ isOpen, onClose, onNavigate }: MobileMenuPr
                                 key={item.section}
                                 onClick={() => onNavigate(item.section)}
                                 className={`block text-left w-full group transition-all duration-500 ${isOpen
-                                        ? 'opacity-100 translate-x-0'
-                                        : 'opacity-0 translate-x-12'
+                                    ? 'opacity-100 translate-x-0'
+                                    : 'opacity-0 translate-x-12'
                                     }`}
                                 style={{
                                     transitionDelay: isOpen ? `${100 + index * 60}ms` : '0ms'

@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Product, products } from "@/data/products";
 import { getOptimizedVideoUrl } from "@/lib/mediaUtils";
 import MobileProductGrid from "./MobileProductGrid";
@@ -136,12 +137,21 @@ export default function MobileWants({ product, viewMode, onToggleMode, onVideoEn
                         : 'translate-y-full opacity-0 pointer-events-none'
                         }`}
                 >
-                    <button
-                        onClick={handleAddToCart}
-                        className="w-full backdrop-blur-md bg-white/10 border border-white/20 text-white py-4 rounded-sm font-bold tracking-widest text-sm uppercase hover:bg-white hover:text-black transition-all duration-500"
-                    >
-                        ADD TO CART
-                    </button>
+                    {product.isJoinSlide ? (
+                        <Link
+                            href="/login"
+                            className="flex items-center justify-center w-full backdrop-blur-md bg-white text-black py-4 rounded-sm font-bold tracking-widest text-sm uppercase transition-all duration-500 hover:bg-white/90"
+                        >
+                            SIGN IN / JOIN THE CLUB
+                        </Link>
+                    ) : (
+                        <button
+                            onClick={handleAddToCart}
+                            className="w-full backdrop-blur-md bg-white/10 border border-white/20 text-white py-4 rounded-sm font-bold tracking-widest text-sm uppercase hover:bg-white hover:text-black transition-all duration-500"
+                        >
+                            ADD TO CART
+                        </button>
+                    )}
                 </div>
 
                 {/* Scroll Indicator */}

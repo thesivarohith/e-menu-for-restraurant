@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 interface MobileDockProps {
     viewMode: 'WANTS' | 'NEEDS';
@@ -52,7 +53,8 @@ export default function MobileDock({ viewMode, onGridToggle, onCartToggle, onOpe
                 </button>
 
                 {/* Mail Icon */}
-                <button
+                <Link
+                    href="/login"
                     className={`p-3 rounded-xl transition-colors ${isDark ? 'hover:bg-white/10' : 'hover:bg-gray-100'
                         }`}
                 >
@@ -64,7 +66,7 @@ export default function MobileDock({ viewMode, onGridToggle, onCartToggle, onOpe
                     >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                </button>
+                </Link>
 
                 {/* Menu Icon */}
                 <button

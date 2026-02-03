@@ -8,7 +8,8 @@ import MobileNeeds from "./MobileNeeds";
 import MobileGrid from "./MobileGrid";
 import MobileDock from "./MobileDock";
 import MobileMenu from "./MobileMenu";
-import CartDrawer, { CartItem } from "@/components/CartDrawer";
+import CartDrawer from "@/components/CartDrawer";
+import { CartItem } from "@/context/CartContext";
 
 interface MobileLayoutProps {
     initialProduct: Product;
@@ -52,6 +53,8 @@ export default function MobileLayout({
 
         if (section === 'home') {
             setViewMode('WANTS'); // Go to Reels/Wants view
+        } else if (section === 'login') {
+            window.location.href = '/login';
         } else {
             setViewMode('NEEDS'); // Go to Grid/Needs view
             // Wait for render, then scroll to section
