@@ -170,14 +170,9 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="group relative flex w-full items-center justify-center space-x-2 overflow-hidden rounded-[4px] bg-white p-4 text-[14px] font-bold tracking-wider text-black transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(255,255,255,0.25)] active:translate-y-0 disabled:opacity-70"
+                            className="group relative flex w-full items-center justify-center overflow-hidden rounded-[4px] bg-white p-4 text-[14px] font-bold tracking-wider text-black transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(255,255,255,0.25)] active:translate-y-0 disabled:opacity-70"
                         >
                             <span className="relative z-10">{isSubmitting ? 'SIGNING IN...' : 'SIGN IN'}</span>
-                            {!isSubmitting && (
-                                <span className="material-icons relative z-10 text-[18px] transition-transform group-hover:translate-x-1">
-                                    arrow_forward
-                                </span>
-                            )}
                             <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                         </button>
                     </form>
