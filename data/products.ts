@@ -5,6 +5,7 @@ export interface Product {
     description: string;
     videoUrl: string;
     gridThumbnail: string;
+    isJoinSlide?: boolean;
     specs?: {
         gsm: string;
         fabric: string;
@@ -125,5 +126,14 @@ export const products: Product[] = [
             fit: "Relaxed",
             origin: "Made in India"
         }
+    },
+    {
+        id: 9,
+        title: "JOIN THE CLUB",
+        price: "",
+        description: "Unlock exclusive access to new drops, sales, and member-only events",
+        videoUrl: "https://res.cloudinary.com/darbjeyc2/video/upload/v1769399866/onyx-hoodie-video_f11ac9.mp4",
+        gridThumbnail: "/images/login-hero.png",
+        isJoinSlide: true
     }
 ];

@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fashion UI Components
 
-## Getting Started
+Premium dark-themed authentication components with cinematic fashion photography and modern aesthetics.
 
-First, run the development server:
+## Components
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### 1. Newsletter Popup (`index.html`)
+A stunning 16:9 newsletter signup popup with:
+- **Split Layout**: 50/50 image-to-form ratio
+- **Email Capture**: Dark minimalist input field
+- **Social Auth**: Apple & Google OAuth buttons
+- **Animations**: Fade-in overlay, slide-up popup, staggered content reveal
+- **Responsive**: Mobile-optimized stacked layout
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Files**: `index.html`, `index.css`, `script.js`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Login Page (`login.html`)
+A full-screen login experience with:
+- **Full-Screen Split**: 50/50 image-to-form layout
+- **Form Fields**: Email, password with toggle visibility
+- **Remember Me**: Checkbox with localStorage persistence
+- **Social Sign-In**: Apple & Google authentication
+- **Validation**: Real-time email/password validation
+- **Responsive**: Mobile-optimized vertical layout
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Files**: `login.html`, `login.css`, `login.js`
 
-## Learn More
+## Features
 
-To learn more about Next.js, take a look at the following resources:
+### Visual Design
+- Pure black (#000000) backgrounds
+- Cinematic fashion photography
+- Glassmorphism effects
+- Smooth micro-animations
+- Premium typography (Inter font)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Interactions
+- Hover effects on all buttons
+- Password visibility toggle
+- Form validation with error messages
+- Success notifications
+- Keyboard shortcuts (ESC, Ctrl+Enter)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Accessibility
+- Semantic HTML5
+- ARIA labels
+- Keyboard navigation
+- Focus-visible states
+- Reduced motion support
 
-## Deploy on Vercel
+## Usage
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Open either component in a modern browser:
+- **Newsletter**: `index.html`
+- **Login**: `login.html`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Both components share the same fashion portrait image (`fashion-portrait.jpg`).
+
+## Customization
+
+Update CSS custom properties in `:root` to modify:
+- Colors
+- Spacing
+- Typography
+- Border radius
+- Transitions
+
+## Browser Support
+
+Requires modern browsers with support for:
+- CSS Custom Properties
+- Flexbox
+- CSS Grid
+- Backdrop Filter
+- Material Icons
+
+## Next Steps
+
+- Integrate backend authentication API
+- Implement OAuth flows (Apple, Google)
+- Add email marketing service integration
+- Set up analytics tracking
+- A/B test different designs

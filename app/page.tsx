@@ -10,6 +10,7 @@ import HeaderToggle from "@/components/HeaderToggle";
 import NeedsView from "@/components/NeedsView";
 import CartDrawer from "@/components/CartDrawer";
 import SizeModal from "@/components/SizeModal";
+import NewsletterPopup from "@/components/NewsletterPopup";
 import MobileLayout from "@/components/mobile/MobileLayout";
 import MobileMenu from "@/components/mobile/MobileMenu";
 import { products, Product } from "@/data/products";
