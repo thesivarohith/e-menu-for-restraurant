@@ -14,13 +14,14 @@ let passwordVisible = false;
 
 togglePasswordBtn.addEventListener('click', () => {
     passwordVisible = !passwordVisible;
+    const offLine = togglePasswordBtn.querySelector('.eye-off-line');
 
     if (passwordVisible) {
         passwordInput.type = 'text';
-        togglePasswordBtn.querySelector('.material-icons').textContent = 'visibility';
+        if (offLine) offLine.style.display = 'none';
     } else {
         passwordInput.type = 'password';
-        togglePasswordBtn.querySelector('.material-icons').textContent = 'visibility_off';
+        if (offLine) offLine.style.display = 'block';
     }
 
     // Add animation
