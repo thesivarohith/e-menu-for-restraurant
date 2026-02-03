@@ -76,12 +76,20 @@ export default function HeroSplit({ product, onVideoEnd, isPaused, onRequestSize
                                 )}
 
                                 {product.isJoinSlide ? (
-                                    <Link
-                                        href="/login"
-                                        className="bg-[#ededed] text-[#0D0D0D] px-8 py-3 text-sm font-medium tracking-wide hover:bg-white transition-colors duration-300"
-                                    >
-                                        SIGN IN
-                                    </Link>
+                                    <div className="flex flex-col gap-4">
+                                        <Link
+                                            href="/login"
+                                            className="bg-[#ededed] text-[#0D0D0D] px-8 py-3 text-sm font-medium tracking-wide hover:bg-white transition-colors duration-300 w-fit"
+                                        >
+                                            SIGN IN
+                                        </Link>
+                                        <p className="text-[10px] tracking-[0.2em] text-white/50 uppercase">
+                                            Don't have an account?{' '}
+                                            <Link href="/signup" className="text-white font-bold hover:underline underline-offset-4">
+                                                Join the Inner Circle
+                                            </Link>
+                                        </p>
+                                    </div>
                                 ) : (
                                     <button
                                         onClick={() => onRequestSizeSelection(product)}
