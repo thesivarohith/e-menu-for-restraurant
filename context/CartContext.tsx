@@ -1,7 +1,10 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from "react";
 import { Product } from "@/data/products";
+import { db, auth } from "@/lib/firebase";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { onAuthStateChanged, User } from "firebase/auth";
 
 export interface CartItem {
     id: number;
@@ -24,6 +27,7 @@ interface CartContextType {
     setIsCartOpen: (open: boolean) => void;
     cartCount: number;
     subtotal: number;
+    isLoading: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -31,6 +35,76 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Flag to prevent saving empty cart on logout
+    const skipNextSave = useRef(false);
+
+    // Listen for auth state changes and load cart
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // User logged in - load cart from Firestore
+                setCurrentUser(user);
+                await loadCartFromFirestore(user.uid);
+            } else {
+                // User logged out - skip saving and clear local cart
+                skipNextSave.current = true;
+                setCartItems([]);
+                setCurrentUser(null);
+            }
+            setIsLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    // Save cart to Firestore whenever it changes (if user is logged in)
+    useEffect(() => {
+        // Don't save if we're loading, no user, or flagged to skip
+        if (isLoading || !currentUser) return;
+
+        if (skipNextSave.current) {
+            skipNextSave.current = false;
+            return;
+        }
+
+        saveCartToFirestore(currentUser.uid, cartItems);
+    }, [cartItems, currentUser, isLoading]);
+
+    // Load cart from Firestore
+    const loadCartFromFirestore = async (userId: string) => {
+        try {
+            const cartRef = doc(db, "carts", userId);
+            const cartSnap = await getDoc(cartRef);
+
+            if (cartSnap.exists()) {
+                const data = cartSnap.data();
+                // Skip saving after loading (we just loaded it, no need to save)
+                skipNextSave.current = true;
+                setCartItems(data.items || []);
+            } else {
+                setCartItems([]);
+            }
+        } catch (error) {
+            console.error("Error loading cart:", error);
+            setCartItems([]);
+        }
+    };
+
+    // Save cart to Firestore
+    const saveCartToFirestore = async (userId: string, items: CartItem[]) => {
+        try {
+            const cartRef = doc(db, "carts", userId);
+            await setDoc(cartRef, {
+                items: items,
+                updatedAt: serverTimestamp()
+            });
+        } catch (error) {
+            console.error("Error saving cart:", error);
+        }
+    };
 
     // Add to cart with size
     const addToCart = (product: Product, size: string) => {
@@ -109,8 +183,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         return acc + (priceNum * item.quantity);
     }, 0);
 
-    // Clear entire cart (used on logout)
+    // Clear entire cart (used on logout - clears local only, Firestore preserved)
     const clearCart = () => {
+        skipNextSave.current = true;
         setCartItems([]);
     };
 
@@ -125,7 +200,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
             isCartOpen,
             setIsCartOpen,
             cartCount,
-            subtotal
+            subtotal,
+            isLoading
         }}>
             {children}
         </CartContext.Provider>
