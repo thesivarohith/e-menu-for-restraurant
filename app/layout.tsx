@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
-import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
-import { AuthProvider } from "@/context/AuthContext";
+import "./globals.css";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -15,8 +14,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "WANTS & NEEDS | Luxury Collection",
-  description: "Explore the ultimate luxury collection where elegance meets innovation",
+  title: "SUVAI | Menu",
+  description: "Crafted with fire. Served with soul. Discover our exquisite menu.",
 };
 
 export default function RootLayout({
@@ -29,11 +28,9 @@ export default function RootLayout({
       <body
         className={`${outfit.variable} ${inter.variable} antialiased font-sans`}
       >
-        <AuthProvider>
-          <CartProvider>
-            {children}
-          </CartProvider>
-        </AuthProvider>
+        <CartProvider>
+          {children}
+        </CartProvider>
       </body>
     </html>
   );
